@@ -38,7 +38,7 @@ const ThreeD = () => {
             }
 
             const data = await response.json();
-            console.log(data);
+           
 
             if (scene) {
                 // Clear existing geometry
@@ -50,7 +50,7 @@ const ThreeD = () => {
                 const walls = data.filter((item: { class: string }) => item.class === "wall");
                 walls.forEach((wall: { coords: number[] }) => {
                     const [x1, y1, x2, y2] = wall.coords;
-                    console.log("x1", x1 ," y1",y1)
+                  
                     drawRectangle(x1, y1, x2, y2, scene);
                 });
 
@@ -88,9 +88,14 @@ const ThreeD = () => {
         wall.position.x=(x1+x2)/2;
         wall.position.y = wallHeight / 2; // Positioned at half the height
         wall.position.z = (y1 + y2) / 2;
-        wall.rotation.y = angle;
+        if (Math.abs(angle) < Math.PI / 4 || Math.abs(angle) > 3 * Math.PI / 4) {
+            wall.rotation.y = 0; // Make the wall horizontal
+        } else {
+            wall.rotation.y = Math.PI / 2; // Make the wall vertical
+        }
+    
         
-        console.log(wall,"wall")
+        console.log(angle," angle")
         scene.add(wall);
 
     };
@@ -101,8 +106,8 @@ const ThreeD = () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.render(scene, cameraRef.current);
             console.log("scene rendered");
-            const positions=getObjectPositions(scene)
-            console.log("positions: ",positions);
+           
+           
             console.log("camera current",cameraRef.current)
         }
         else{

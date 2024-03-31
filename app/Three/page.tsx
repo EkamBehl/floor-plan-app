@@ -115,9 +115,12 @@ const ThreeD = () => {
         wall.position.x = (x1 + x2) / 2;
         wall.position.y = wallHeight / 2; // Positioned at half the height
         wall.position.z = (y1 + y2) / 2;
-        wall.rotation.y = angle;
-
-        console.log(wall, "wall")
+        if (Math.abs(angle) < Math.PI / 4 || Math.abs(angle) > 3 * Math.PI / 4) {
+            wall.rotation.y = 0; // Make the wall horizontal
+        } else {
+            wall.rotation.y = Math.PI / 2; // Make the wall vertical
+        }
+     
         scene.add(wall);
     };
 
