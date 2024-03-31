@@ -22,7 +22,7 @@ const ThreeD = () => {
         cameraRef.current = camera;
 
         // Renderer setup
-        const renderer = new THREE.WebGLRenderer({ canvas: mountRef.current });
+        const renderer = new THREE.WebGLRenderer({ canvas: mountRef.current! });
         renderer.setSize(window.innerWidth, window.innerHeight);
         rendererRef.current = renderer;
 
