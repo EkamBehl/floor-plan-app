@@ -13,6 +13,9 @@ const ThreeD = () => {
     const [scene, setScene] = useState<THREE.Scene | null>(null);
     const [wallObjects,setWallObjects]=useState()
     const [doorObjects,setDoorObjects]=useState()
+    const materialss=["blue","black","cyan","grey","green","orange","magenta","salmon","violet","teal"]
+    let i=0;
+    let m=0;
     useEffect(() => {
         // Scene initialization
         const initScene = new THREE.Scene();
@@ -149,7 +152,7 @@ const ThreeD = () => {
             }
     
             const data = await response.json();
-    
+            console.log("data",data);
             if (scene) {
                 // Clear existing geometry
                 while (scene.children.length > 0) {
@@ -164,12 +167,17 @@ const ThreeD = () => {
                 scene.add(floor);
                 
                 const walls = data.filter((item) => item.class === "wall");
-                const doors = data.filter((item) => item.class === "door" && item.confidence > 0.5);
+                const doors = data.filter((item) => item.class === "door" && item.confidence > 0.4);
     
                 // Process walls
                 walls.forEach((wall) => {
+                    
                     const [x1, y1, x2, y2] = wall.coords;
-                    drawRectangle(x1, y1, x2, y2, scene);
+                    drawRectangle(x1, y1, x2, y2, scene,materialss[m]);
+                    m=m+1;
+                    if(m===materialss.length-1){
+                        m=0;
+                    }
                 });
     
                 // Process doors
@@ -180,6 +188,7 @@ const ThreeD = () => {
     
                     // Find the closest points on walls for each door
                     const closestPoints = getDoorCoords(walls, [[x1, y1], [x2, y2]]);
+                    console.log("Material: " ,materialss[i], "closest points: ",closestPoints )
                     if (closestPoints.length === 2) {
                         const cp1 = closestPoints[0];
                         const cp2 = closestPoints[1];
@@ -188,8 +197,9 @@ const ThreeD = () => {
                         const zDistance = Math.abs(cp1[1] - cp2[1]);
                         const alignAlongXAxis = xDistance > zDistance;
                 
-                        loadDoorModel(precisePosition, alignAlongXAxis, scene);
+                        loadDoorModel(precisePosition, alignAlongXAxis, scene,materialss[i]);
                     }
+                    i=i+1;
                 });
     
                 // Trigger scene rendering
@@ -322,14 +332,14 @@ const ThreeD = () => {
     //         }
     //     );
     // };
-    const loadDoorModel = (position, alignAlongXAxis, scene) => {
+    const loadDoorModel = (position, alignAlongXAxis, scene,materials) => {
         const loader = new OBJLoader();
         loader.load(
             '/door.obj', // Adjust the path to your .obj file
             (obj) => {
                 obj.traverse((child) => {
                     if (child instanceof THREE.Mesh) {
-                        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color for the door
+                        const material = new THREE.MeshBasicMaterial({ color: materials}); // Red color for the door
                         child.material = material;
                     }
                 });
@@ -337,6 +347,8 @@ const ThreeD = () => {
                 // Adjust position and rotation based on the calculated values
                 obj.position.set(position.x, position.y+35, position.z);
                 
+                console.log("Position of the door: ",position.x, position.y+35, position.z, "material: ",materials)
+
                 obj.rotation.y = alignAlongXAxis ? 0 : Math.PI / 2;
                 // Adjust scale if necessary
                 obj.scale.set(4, 4, 4);
@@ -354,13 +366,13 @@ const ThreeD = () => {
     
     
 
-    const drawRectangle = (x1: number, y1: number, x2: number, y2: number, scene: THREE.Scene) => {
+    const drawRectangle = (x1: number, y1: number, x2: number, y2: number, scene: THREE.Scene,materials) => {
         const wallHeight = 70;
         const wallLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         const angle = Math.atan2(y2 - y1, x2 - x1);
 
         const geometry = new THREE.BoxGeometry(wallLength, wallHeight, 10);
-        const material = new THREE.MeshBasicMaterial({ color: 0x8fbc8f });
+        const material = new THREE.MeshBasicMaterial({ color: materials });
         const wall = new THREE.Mesh(geometry, material);
 
         wall.position.x = (x1 + x2) / 2;
