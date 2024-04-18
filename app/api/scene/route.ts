@@ -34,16 +34,12 @@ export async function POST(req:Request){
         
           
         const scene =await sceneBuilder({data})
-        const sceneVals={
-            
-
-        }
+        
         await prisma.scene.create({
             data:{
                 name:name,
                 imageString:imageString,
                 userId:user.id,
-                user:user,
                 sceneString:scene
             }
         })
