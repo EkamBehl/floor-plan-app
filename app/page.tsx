@@ -1,8 +1,7 @@
 
 import Image from "next/image";
 // import ThreeD from "./About/page";
-import ThreeD from "./Three/page";
-import ThreeDScene from "./Three/page_3"
+import ThreeD from "./(root)/(routes)/Three/page";
 import Link from "next/link";
 import MaxWidthWrapper from "../components/MaxWidthWrapper";
 import { ArrowRight } from "lucide-react";

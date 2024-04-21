@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import Link from 'next/link'
 import { buttonVariants } from './ui/button'
 import { ArrowRight, Ghost } from 'lucide-react'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { LoginLink, RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server'
-const Navbar = () => {
+const Navbar =  () => {
+    
   return (
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
         <MaxWidthWrapper>
@@ -19,6 +21,7 @@ const Navbar = () => {
                             variant:'ghost',
                             size:'sm',
                         })}href='/pricing'>Pricing</Link>
+                       
                         <LoginLink className={buttonVariants({
                             variant:'ghost',
                             size:'sm',})}>Sign In</LoginLink>
