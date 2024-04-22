@@ -55,7 +55,7 @@ const Page = async() => {
   
     return (
     <div className='flex flex-col justify-center self-center'>
-     
+      {/* <ThreeD/> */}
       <h2 className=' items-center al text-lg p-4 flex justify-center'>Hello, {user.given_name}</h2>
       <Link className={cn(buttonVariants({size:'sm',}) ,' w-fit flex justify-center items-center')}  href='/scene/new'>Create a Scene <PlusIcon/></Link>
       {

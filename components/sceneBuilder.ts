@@ -28,6 +28,11 @@ const drawRectangle = (x1: number, y1: number, x2: number, y2: number, scene: TH
   
   scene.add(wall);
 };
+const logObjectPositions = (scene: { children: any[]; }) => {
+  scene.children.forEach((obj, index) => {
+    console.log(`Object ${index} (${obj.type}) position:`, obj.position.clone());
+  });
+};
 
 const sceneBuilder = async({
     data
@@ -57,6 +62,15 @@ else{
 
 
 
+  scene.updateMatrix();
+  scene.updateMatrixWorld(true);
+  logObjectPositions(scene)
+  var numOfMeshes = 0;
+  scene.traverse( function( child ) {
+      if( child instanceof THREE.Mesh )
+          numOfMeshes++;
+  } );
+  console.log(numOfMeshes);
   const sceneJson = scene.toJSON();
   const stringifiedScene = JSON.stringify(sceneJson);
   return stringifiedScene

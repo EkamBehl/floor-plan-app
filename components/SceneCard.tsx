@@ -2,7 +2,10 @@ import { Scene } from '@prisma/client'
 import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import Image from 'next/image'
-import { Button } from './ui/button'
+import { Button, buttonVariants } from './ui/button'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { PlusIcon } from 'lucide-react'
 
 interface sceneCardProps{
     scene: Scene
@@ -29,7 +32,7 @@ const SceneCard = ({scene}:sceneCardProps) => {
             </div>
         </CardContent>
         <CardFooter>
-            <Button>Edit</Button>
+        <Link className={cn(buttonVariants({size:'sm',}) ,' w-fit flex justify-center items-center')}  href={`/scene/edit-scene/${scene.id}`}>Edit Scene</Link>
         </CardFooter>
         
         
