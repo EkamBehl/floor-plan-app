@@ -120,9 +120,59 @@ const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
             controls.update();
             controlsRef.current = controls;
 
-            const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-            newScene.add(light);  // Use the provided scene
+            const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+            hemiLight.color.setHSL( 0.6, 1, 0.6 );
+            hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+            hemiLight.position.set( 0, 50, 0 );
+            newScene.add( hemiLight );
 
+            const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+            newScene.add( hemiLightHelper );
+            const axesHelper = new THREE.AxesHelper(50);
+            newScene.add(axesHelper);
+            
+
+            const uniforms = {
+                'topColor': { value: new THREE.Color('hsl(174, 60%, 80%)') }, // pale turquoise top
+                'bottomColor': { value: new THREE.Color('hsl(174, 60%, 70%)') }, // slightly darker at the bottom
+                'offset': { value: 33 },
+                'exponent': { value: 0.6 }
+            };
+            
+            const skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+const skyMat = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: `
+            varying vec3 vWorldPosition;
+
+            void main() {
+                vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                vWorldPosition = worldPosition.xyz;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 topColor;
+            uniform vec3 bottomColor;
+            uniform float offset;
+            uniform float exponent;
+
+            varying vec3 vWorldPosition;
+
+            void main() {
+                float h = normalize(vWorldPosition + offset).y;
+                float intensity = pow(max(0.0, h), exponent);
+                vec3 color = mix(bottomColor, topColor, intensity);
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `,
+        side: THREE.BackSide
+    });
+
+    const sky = new THREE.Mesh(skyGeo, skyMat);
+    newScene.add(sky);
+
+            
             const animate = () => {
                 if (!rendererRef.current || !cameraRef.current || !controlsRef.current) return;
                 requestAnimationFrame(animate);

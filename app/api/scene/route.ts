@@ -30,7 +30,7 @@ export async function POST(req:Request){
             body: JSON.stringify({imageString})  // Send the image URL as part of the request body
         });
         const data=await response.json()
-        // console.log("Responses.........................................................",data)
+        console.log("------------------------------------------------------------------------")
         
           
         const scene =await sceneBuilder({data})
