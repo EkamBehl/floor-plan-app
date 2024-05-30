@@ -17,9 +17,8 @@ const sceneIdPage = async ({
     
 
   return (
-    <SceneForm initialData={scene}>
-      
-    </SceneForm>
+    <SceneForm initialData={scene}/>
+    
   )
 }
 

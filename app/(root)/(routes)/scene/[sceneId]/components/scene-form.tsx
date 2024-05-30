@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios'
 
 import { useRouter } from 'next/navigation';
+import sceneBuilder from '@/components/sceneBuilder';
 interface SceneFormProps{
     initialData: Scene | null;
 }
@@ -44,17 +45,26 @@ export const SceneForm=({
                 await axios.patch(`/api/scene/${initialData.id}`,values)
             }
             else{
-                const formData = new FormData();
-                formData.append('image', values.imageString);
+                const img=values.imageString;
                 const response = await fetch('http://127.0.0.1:8000/detect/', {
-                method: 'POST',
-                body: formData,
-            });
-                console.log("response value is ....................................",response)
-                await axios.post('/api/scene',values)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({imageString:img})  // Send the image URL as part of the request body
+                });
+                const data=await response.json()
+                const scene=await sceneBuilder({data})
+                const dataForDatabase={
+                    name:values.name,
+                    imageString:values.imageString,
+                    sceneString:scene
+                }
+                await axios.post('/api/scene',dataForDatabase)
             }
             router.refresh()
             router.push("/dashboard")
+            router.refresh()
         }
         catch(error){
             console.log("Something went wrong",error)

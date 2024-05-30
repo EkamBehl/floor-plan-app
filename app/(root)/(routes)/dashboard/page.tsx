@@ -1,7 +1,6 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import ThreeD from '../Three/page'
 import prisma from '@/lib/db';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';

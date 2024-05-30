@@ -54,65 +54,391 @@
 // };
 
 // export default ThreeJsScene;
+// "use client"
+// import React, { useRef, useEffect } from 'react';
+// import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+
+// interface ThreeJsSceneProps {
+//     data: string;
+// }
+// function loadObject(sceneString: string){
+//     console.log("function called")
+//     const json= JSON.parse(sceneString)
+//     console.log("json parsed")
+//     const loader=new THREE.ObjectLoader()
+//     console.log("loader made")
+//     const scene=loader.parse(json) as THREE.Scene
+//     console.log("scene made")
+//     return scene
+// }
+// const logObjectPositions = (scene: { children: any[]; }) => {
+//     scene.children.forEach((obj, index) => {
+//       console.log(`Object ${index} (${obj.type}) position:`, obj.position.clone());
+//     });
+//   };
+// const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
+   
+//     const mountRef = useRef<HTMLCanvasElement>(null);
+//     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+//     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+//     const controlsRef = useRef<OrbitControls | null>(null);
+    
+//     useEffect(() => {
+//             var newScene=new THREE.Scene()
+            
+            
+//             newScene=loadObject(data)
+
+//             logObjectPositions(newScene)
+//             console.log("Scene after reconstructing: ",newScene )
+//             var numOfMeshes = 0;
+//             newScene.traverse( function( child ) {
+//                 if( child instanceof THREE.Mesh )
+//                     numOfMeshes++;
+//             } );
+//             console.log(numOfMeshes);
+//         // Only instantiate the camera and renderer if we're on the client-side
+//         if (typeof window !== 'undefined' && mountRef.current) {
+//             newScene.traverse( function( child ) {
+//                 if( child instanceof THREE.Mesh )
+//                     numOfMeshes++;
+//             } );
+//             console.log(numOfMeshes);
+           
+//             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+//             camera.position.set(590.9590759277344, 50, 619.5294952392578);
+//             cameraRef.current = camera;
+
+//             const renderer = new THREE.WebGLRenderer({ canvas: mountRef.current });
+//             renderer.setSize(window.innerWidth, window.innerHeight);
+//             renderer.shadowMap.enabled = true;
+//             rendererRef.current = renderer;
+
+//             const controls = new OrbitControls(camera, renderer.domElement);
+//             controls.target.set(0, 0, 0);
+//             controls.update();
+//             controlsRef.current = controls;
+
+//              // Add a directional light for shadows
+//             const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+//             dirLight.position.set(100, 100, 100);
+//             dirLight.castShadow = true;
+//             dirLight.shadow.mapSize.width = 2048;
+//             dirLight.shadow.mapSize.height = 2048;
+//             newScene.add(dirLight);
+
+//             const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+//             hemiLight.color.setHSL( 0.6, 1, 0.6 );
+//             hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+//             hemiLight.position.set( 0, 50, 0 );
+//             newScene.add( hemiLight );
+
+//             const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+//             newScene.add( hemiLightHelper );
+//             const axesHelper = new THREE.AxesHelper(50);
+//             newScene.add(axesHelper);
+            
+
+//             const uniforms = {
+//                 'topColor': { value: new THREE.Color('hsl(174, 60%, 80%)') }, // pale turquoise top
+//                 'bottomColor': { value: new THREE.Color('hsl(174, 60%, 70%)') }, // slightly darker at the bottom
+//                 'offset': { value: 33 },
+//                 'exponent': { value: 0.6 }
+//             };
+            
+//             const skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+// const skyMat = new THREE.ShaderMaterial({
+//         uniforms: uniforms,
+//         vertexShader: `
+//             varying vec3 vWorldPosition;
+
+//             void main() {
+//                 vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+//                 vWorldPosition = worldPosition.xyz;
+//                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//             }
+//         `,
+//         fragmentShader: `
+//             uniform vec3 topColor;
+//             uniform vec3 bottomColor;
+//             uniform float offset;
+//             uniform float exponent;
+
+//             varying vec3 vWorldPosition;
+
+//             void main() {
+//                 float h = normalize(vWorldPosition + offset).y;
+//                 float intensity = pow(max(0.0, h), exponent);
+//                 vec3 color = mix(bottomColor, topColor, intensity);
+//                 gl_FragColor = vec4(color, 1.0);
+//             }
+//         `,
+//         side: THREE.BackSide
+//     });
+
+//     const sky = new THREE.Mesh(skyGeo, skyMat);
+//     newScene.add(sky);
+
+            
+//             const animate = () => {
+//                 if (!rendererRef.current || !cameraRef.current || !controlsRef.current) return;
+//                 requestAnimationFrame(animate);
+//                 controlsRef.current.update();
+//                 rendererRef.current.render(newScene, cameraRef.current);
+//             };
+//             animate();
+
+//             return () => {
+//                 if (controlsRef.current) controlsRef.current.dispose();
+//                 if (rendererRef.current) rendererRef.current.dispose();
+//             };
+//         }
+//     }, []);  // Depend on `data` to potentially recreate the scene if it changes
+
+//     return (
+//         <canvas ref={mountRef} style={{ width: '100vw', height: '100vh' }}></canvas>
+//     );
+// };
+
+// export default ThreeJsScene;
+// "use client"
+// import React, { useRef, useEffect } from 'react';
+// import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+// interface ThreeJsSceneProps {
+//     data: string;
+// }
+
+// function loadObject(sceneString: string) {
+//     console.log("function called");
+//     const json = JSON.parse(sceneString);
+//     console.log("json parsed");
+//     const loader = new THREE.ObjectLoader();
+//     console.log("loader made");
+//     const scene = loader.parse(json) as THREE.Scene;
+//     console.log("scene made");
+//     return scene;
+// }
+
+// const logObjectPositions = (scene: { children: any[]; }) => {
+//     scene.children.forEach((obj, index) => {
+//         console.log(`Object ${index} (${obj.type}) position:`, obj.position.clone());
+//     });
+// };
+
+// const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
+//     const mountRef = useRef<HTMLCanvasElement>(null);
+//     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+//     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+//     const controlsRef = useRef<OrbitControls | null>(null);
+
+//     useEffect(() => {
+//         var newScene = new THREE.Scene();
+
+//         newScene = loadObject(data);
+
+//         logObjectPositions(newScene);
+//         console.log("Scene after reconstructing: ", newScene);
+//         var numOfMeshes = 0;
+//         newScene.traverse(function (child) {
+//             if (child instanceof THREE.Mesh) {
+//                 child.castShadow = true;    // Enable shadows for meshes
+//                 child.receiveShadow = true; // Enable receiving shadows for meshes
+//                 numOfMeshes++;
+//             }
+//         });
+//         console.log(numOfMeshes);
+
+//         if (typeof window !== 'undefined' && mountRef.current) {
+//             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+//             camera.position.set(590.9590759277344, 50, 619.5294952392578);
+//             cameraRef.current = camera;
+
+//             const renderer = new THREE.WebGLRenderer({ canvas: mountRef.current });
+//             renderer.setSize(window.innerWidth, window.innerHeight);
+//             renderer.shadowMap.enabled = true;  // Enable shadow maps
+//  // Optional: PCFSoftShadowMap for softer shadows
+//             rendererRef.current = renderer;
+
+//             const controls = new OrbitControls(camera, renderer.domElement);
+//             controls.target.set(0, 0, 0);
+//             controls.update();
+//             controlsRef.current = controls;
+
+//             const dirLight = new THREE.DirectionalLight(0xff0000, 1);
+//             dirLight.position.set(100, 1000, 100);
+//             dirLight.castShadow = true;
+//             dirLight.shadow.mapSize.width = 2048;
+//             dirLight.shadow.mapSize.height = 2048;
+//             dirLight.shadow.camera.near = 0.5; // default
+//             dirLight.shadow.camera.far = 500; // default
+//             dirLight.shadow.bias = -0.0001; // Adjust to prevent shadow acne
+//             newScene.add(dirLight);
+
+
+//             const dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 10);
+//             newScene.add(dirLightHelper);
+
+
+//             const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 2);
+//             hemiLight.color.setHSL(0.6, 1, 0.6);
+//             hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+//             hemiLight.position.set(0, 50, 0);
+//             newScene.add(hemiLight);
+
+//             const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+//             newScene.add(hemiLightHelper);
+//             const axesHelper = new THREE.AxesHelper(50);
+//             newScene.add(axesHelper);
+
+//             const uniforms = {
+//                 'topColor': { value: new THREE.Color('hsl(174, 60%, 80%)') },
+//                 'bottomColor': { value: new THREE.Color('hsl(174, 60%, 70%)') },
+//                 'offset': { value: 33 },
+//                 'exponent': { value: 0.6 }
+//             };
+
+//             const skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+//             const skyMat = new THREE.ShaderMaterial({
+//                 uniforms: uniforms,
+//                 vertexShader: `
+//                     varying vec3 vWorldPosition;
+
+//                     void main() {
+//                         vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+//                         vWorldPosition = worldPosition.xyz;
+//                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//                     }
+//                 `,
+//                 fragmentShader: `
+//                     uniform vec3 topColor;
+//                     uniform vec3 bottomColor;
+//                     uniform float offset;
+//                     uniform float exponent;
+
+//                     varying vec3 vWorldPosition;
+
+//                     void main() {
+//                         float h = normalize(vWorldPosition + offset).y;
+//                         float intensity = pow(max(0.0, h), exponent);
+//                         vec3 color = mix(bottomColor, topColor, intensity);
+//                         gl_FragColor = vec4(color, 1.0);
+//                     }
+//                 `,
+//                 side: THREE.BackSide
+//             });
+
+//             const sky = new THREE.Mesh(skyGeo, skyMat);
+//             newScene.add(sky);
+
+//             // Create a floor to receive shadows
+           
+
+//             const animate = () => {
+//                 if (!rendererRef.current || !cameraRef.current || !controlsRef.current) return;
+//                 requestAnimationFrame(animate);
+//                 controlsRef.current.update();
+//                 rendererRef.current.render(newScene, cameraRef.current);
+//             };
+//             animate();
+
+//             return () => {
+//                 if (controlsRef.current) controlsRef.current.dispose();
+//                 if (rendererRef.current) rendererRef.current.dispose();
+//             };
+//         }
+//     }, []);
+
+//     return (
+//         <canvas ref={mountRef} style={{ width: '100vw', height: '100vh' }}></canvas>
+//     );
+// };
+
+// export default ThreeJsScene;
+
+
+
 "use client"
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 interface ThreeJsSceneProps {
     data: string;
 }
-function loadObject(sceneString: string){
-    console.log("function called")
-    const json= JSON.parse(sceneString)
-    console.log("json parsed")
-    const loader=new THREE.ObjectLoader()
-    console.log("loader made")
-    const scene=loader.parse(json) as THREE.Scene
-    console.log("scene made")
-    return scene
+
+function loadObject(sceneString: string) {
+    console.log("function called");
+    const json = JSON.parse(sceneString);
+    console.log("json parsed");
+    const loader = new THREE.ObjectLoader();
+    console.log("loader made");
+    const scene = loader.parse(json) as THREE.Scene;
+    console.log("scene made");
+    return scene;
 }
+// const windowLoader=(scene:THREE.Scene,location:any,position:any)=>{
+//     const loader= new GLTFLoader();
+//             const glassMaterial=new THREE.MeshPhysicalMaterial({
+//                 roughness:0,
+//                 metalness:0,
+//                 transmission:0.8
+//             })
+//             loader.load('/window.glb',(gltfScene)=>{
+//                 const mesh=gltfScene.scene;
+//                 mesh.position.set(100,200,100);
+//                 mesh.scale.set(50,50,50)
+//                 mesh.receiveShadow=true;
+//                 mesh.castShadow=true;
+//                 mesh.traverse(node=>{
+//                     if(node.type=="Mesh"){
+//                         node.castShadow=true;
+//                         node.receiveShadow=true
+//                         if(node.name=="window_pane"){
+//                             node.material=glassMaterial;
+//                         }
+//                     }
+//                 })
+//                 scene.add(mesh)
+//             })
+// }
 const logObjectPositions = (scene: { children: any[]; }) => {
     scene.children.forEach((obj, index) => {
-      console.log(`Object ${index} (${obj.type}) position:`, obj.position.clone());
+        console.log(`Object ${index} (${obj.type}) position:`, obj.position.clone());
     });
-  };
+};
 const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
-   
     const mountRef = useRef<HTMLCanvasElement>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const controlsRef = useRef<OrbitControls | null>(null);
-    
-    useEffect(() => {
-            var newScene=new THREE.Scene()
-            
-            
-            newScene=loadObject(data)
 
-            logObjectPositions(newScene)
-            console.log("Scene after reconstructing: ",newScene )
-            var numOfMeshes = 0;
-            newScene.traverse( function( child ) {
-                if( child instanceof THREE.Mesh )
-                    numOfMeshes++;
-            } );
-            console.log(numOfMeshes);
-        // Only instantiate the camera and renderer if we're on the client-side
+    useEffect(() => {
+        var newScene = new THREE.Scene();
+        var TempScene=new THREE.Scene()
+        newScene = loadObject(data);
+        
+
+        logObjectPositions(newScene);
+        console.log("Scene after reconstructing: ", newScene);
+        
+
         if (typeof window !== 'undefined' && mountRef.current) {
-            newScene.traverse( function( child ) {
-                if( child instanceof THREE.Mesh )
-                    numOfMeshes++;
-            } );
-            console.log(numOfMeshes);
-           
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             camera.position.set(590.9590759277344, 50, 619.5294952392578);
             cameraRef.current = camera;
 
             const renderer = new THREE.WebGLRenderer({ canvas: mountRef.current });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;  // Enable shadow maps
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Optional: PCFSoftShadowMap for softer shadows
+            console.log(renderer)
             rendererRef.current = renderer;
 
             const controls = new OrbitControls(camera, renderer.domElement);
@@ -120,59 +446,105 @@ const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
             controls.update();
             controlsRef.current = controls;
 
-            const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
-            hemiLight.color.setHSL( 0.6, 1, 0.6 );
-            hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-            hemiLight.position.set( 0, 50, 0 );
-            newScene.add( hemiLight );
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(300, 600, 300);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 5120; // Adjust for better shadow resolution
+            dirLight.shadow.mapSize.height = 5120;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 1000;
+            dirLight.shadow.camera.left = -1000;
+            dirLight.shadow.camera.right = 1000;
+            dirLight.shadow.camera.top = 1000;
+            dirLight.shadow.camera.bottom = -1000
+            ;
+            newScene.add(dirLight);
+          
 
-            const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
-            newScene.add( hemiLightHelper );
+            const dirLightHelper = new THREE.CameraHelper(dirLight.shadow.camera);
+            newScene.add(dirLightHelper);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+            newScene.add(ambientLight);
+            
+            // windowLoader(newScene,1,1);
+            
+            // const mtlLoader = new MTLLoader();
+            // mtlLoader.load('/windows1.mtl', (materials) => {
+            //     materials.preload();  // This ensures materials are ready before they are used by the OBJLoader.
+            //     loadObjWithMaterials(materials,newScene);
+            // });
+
+           
+            // const hemiLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.2);
+            // newScene.add(hemiLight);
+
+
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 2);
+            hemiLight.color.setHSL(0.6, 1, 0.6);
+            hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+            hemiLight.position.set(0, 50, 0);
+            newScene.add(hemiLight);
+
+            // const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+            // newScene.add(hemiLightHelper);
             const axesHelper = new THREE.AxesHelper(50);
             newScene.add(axesHelper);
-            
 
             const uniforms = {
-                'topColor': { value: new THREE.Color('hsl(174, 60%, 80%)') }, // pale turquoise top
-                'bottomColor': { value: new THREE.Color('hsl(174, 60%, 70%)') }, // slightly darker at the bottom
+                'topColor': { value: new THREE.Color('hsl(174, 60%, 80%)') },
+                'bottomColor': { value: new THREE.Color('hsl(174, 60%, 70%)') },
                 'offset': { value: 33 },
                 'exponent': { value: 0.6 }
             };
-            
+
             const skyGeo = new THREE.SphereGeometry(4000, 32, 15);
-const skyMat = new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        vertexShader: `
-            varying vec3 vWorldPosition;
+            const skyMat = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: `
+                    varying vec3 vWorldPosition;
 
-            void main() {
-                vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-                vWorldPosition = worldPosition.xyz;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-        `,
-        fragmentShader: `
-            uniform vec3 topColor;
-            uniform vec3 bottomColor;
-            uniform float offset;
-            uniform float exponent;
+                    void main() {
+                        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                        vWorldPosition = worldPosition.xyz;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 topColor;
+                    uniform vec3 bottomColor;
+                    uniform float offset;
+                    uniform float exponent;
 
-            varying vec3 vWorldPosition;
+                    varying vec3 vWorldPosition;
 
-            void main() {
-                float h = normalize(vWorldPosition + offset).y;
-                float intensity = pow(max(0.0, h), exponent);
-                vec3 color = mix(bottomColor, topColor, intensity);
-                gl_FragColor = vec4(color, 1.0);
-            }
-        `,
-        side: THREE.BackSide
-    });
-
-    const sky = new THREE.Mesh(skyGeo, skyMat);
-    newScene.add(sky);
-
+                    void main() {
+                        float h = normalize(vWorldPosition + offset).y;
+                        float intensity = pow(max(0.0, h), exponent);
+                        vec3 color = mix(bottomColor, topColor, intensity);
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                `,
+                side: THREE.BackSide
+            });
             
+            newScene.traverse(child => {
+                if (child instanceof THREE.Object3D) {
+                    console.log(`Group found with ${child.children.length} children.`);
+                    child.children.forEach(subChild => {
+                        console.log(`Child type: ${subChild.type}`);
+                    });
+                }
+            });
+            newScene.traverse(child => {
+                if (child.visible === false) {
+                    console.warn(`Invisible object found: ${child.name}`);
+                }
+            });
+            
+            
+            const sky = new THREE.Mesh(skyGeo, skyMat);
+            newScene.add(sky);
+
             const animate = () => {
                 if (!rendererRef.current || !cameraRef.current || !controlsRef.current) return;
                 requestAnimationFrame(animate);
@@ -186,7 +558,7 @@ const skyMat = new THREE.ShaderMaterial({
                 if (rendererRef.current) rendererRef.current.dispose();
             };
         }
-    }, []);  // Depend on `data` to potentially recreate the scene if it changes
+    }, []);
 
     return (
         <canvas ref={mountRef} style={{ width: '100vw', height: '100vh' }}></canvas>
