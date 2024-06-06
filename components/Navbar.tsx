@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import Link from 'next/link'
 import { buttonVariants } from './ui/button'
 import { ArrowRight, Ghost } from 'lucide-react'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { LogoutLink, getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { LoginLink, RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server'
-const Navbar =  () => {
+const Navbar = async  () => {
+    const {getUser}=getKindeServerSession();
+    const user=await getUser()
+ 
     
   return (
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
@@ -15,20 +19,31 @@ const Navbar =  () => {
                     <span>DepthCraft.</span>
                 </Link>
 
-                <div className='hidden items-center space-x-4 sm:flex'>
-                    <>
-                        <Link className={buttonVariants({
-                            variant:'ghost',
-                            size:'sm',
-                        })}href='/pricing'>Pricing</Link>
+                <div className=' items-center space-x-4 sm:flex'>
+                    {
+                        !user&&
+                    
+                        <>
+                            <Link className={buttonVariants({
+                                variant:'ghost',
+                                size:'sm',
+                            })}href='/pricing'>Pricing</Link>
+                        
+                            <LoginLink className={buttonVariants({
+                                variant:'ghost',
+                                size:'sm',})}>Sign In</LoginLink>
+                            <RegisterLink className={buttonVariants({
+                                
+                                size:'sm',})}>Get Started <ArrowRight className='ml-1.5'/></RegisterLink>
+                        </> 
+                    }
+                    { user&&
                        
-                        <LoginLink className={buttonVariants({
-                            variant:'ghost',
-                            size:'sm',})}>Sign In</LoginLink>
-                        <RegisterLink className={buttonVariants({
-                            
-                            size:'sm',})}>Get Started <ArrowRight className='ml-1.5'/></RegisterLink>
-                    </>
+                            <LogoutLink className={buttonVariants({
+                                variant:'ghost',
+                                size:'sm',})}>Sign Out</LogoutLink>
+                       
+                    }
 
                 </div>
             </div>

@@ -41,6 +41,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/dat.gui": "^0.7.13",
     "@types/delaunator": "^5.0.2",
     "@types/jsdom": "^21.1.6",
     "@types/node": "^20",
@@ -48,6 +49,7 @@
     "@types/react-dom": "^18",
     "@types/three": "^0.162.0",
     "autoprefixer": "^10.0.1",
+    "dat.gui": "^0.7.9",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
