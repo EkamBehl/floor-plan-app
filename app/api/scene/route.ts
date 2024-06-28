@@ -17,19 +17,6 @@ export async function POST(req:Request){
             return new NextResponse("Missing required fields",{status:400})
         }
         
-       
-
-        // const response = await fetch('http://127.0.0.1:8000/detect/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({imageString})  // Send the image URL as part of the request body
-        // });
-        // const data=await response.json()
-        // console.log("------------------------------------------------------------------------")
-        
-          
         
         
         await prisma.scene.create({

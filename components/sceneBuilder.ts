@@ -84,44 +84,48 @@ const loadWindows = (points: any[], scene: THREE.Scene) => {
 var i=0;
 const loadDoorModel = (points: [number, number][], scene: THREE.Scene, materials: string) => {
   // Convert 2D points to 3D vectors, mapping 2D y to 3D z, and setting 3D y to a fixed value
-  const point1 = new THREE.Vector3(points[1][0], 0, points[0][1]);
-  const point2 = new THREE.Vector3(points[0][0], 0, points[1][1]);
+  const point1 = new THREE.Vector3(points[0][0], 0, points[0][1]);
+  const point2 = new THREE.Vector3(points[1][0], 0, points[1][1]);
 
   // Calculate the actual x-difference as length
-  const xLength = Math.abs(point2.x - point1.x); // Length based on x-difference
-  const height = 100; // Arbitrary height, adjust as needed
-  const thickness = 4; // Thickness of the door
+  const xLength = point1.distanceTo(point2); // Distance between the two points
+  const height = 70; // Arbitrary height, adjust as needed
+  const thickness = 10; // Thickness of the door
 
   // Cube geometry with x-difference as length
   const geometry = new THREE.BoxGeometry(xLength, height, thickness);
   geometry.computeVertexNormals();
-  const material = new THREE.MeshPhongMaterial({color: 0xD3D3D3 });
-  const cube = new THREE.Mesh(geometry, material);
-  
 
-  // Calculate the vector from point2 to point1
-  const direction = new THREE.Vector3().subVectors(point1, point2).normalize();
+  // const cube = new THREE.Mesh(geometry, material);
+
+  // Calculate the midpoint between point1 and point2 for positioning the cube
+  const midpoint = new THREE.Vector3().addVectors(point1, point2).multiplyScalar(0.5);
+  midpoint.y = height / 2; // Set the midpoint's y to half the height of the cube
+
+  // Calculate the rotation angle
+  const direction = new THREE.Vector3().subVectors(point2, point1).normalize();
   const angle = Math.atan2(direction.z, direction.x);
 
-  // Calculate adjustment vector for centering the cube based on half the x-length
-  const halfLengthX = (xLength / 2) * Math.cos(angle); // Project x-length onto direction
-  const halfLengthZ = (xLength / 2) * Math.sin(angle); // Project x-length onto direction
+  const loader=new GLTFLoader();
+  loader.load(
+    '/door.glb',
+    (gltf) => {
 
-  // Set the starting edge of the cube exactly at point2 by adjusting the center
-  const startPosition = new THREE.Vector3(
-    point2.x +2*halfLengthX, // Subtract half the x-length to align with point2
-    height / 2,
-    point2.z + halfLengthZ  // Subtract half the x-length to align with point2
-  );
-
-  // Adjust cube position and rotation
-  cube.position.set(startPosition.x, startPosition.y, startPosition.z);
-  cube.rotation.y = angle;
-  cube.castShadow = true;
-  cube.receiveShadow = true;
+      const cube=gltf.scene
+      cube.position.set(midpoint.x, midpoint.y, midpoint.z);
+      cube.rotation.y = angle;
+      cube.castShadow = true;
+      cube.receiveShadow = true;
+      cube.scale.set(xLength,height,thickness)
+      scene.add(cube);
+    })
+    
+  // Set the cube's position and rotation
+  
   // Add cube to the scene
-  scene.add(cube);
+  
 };
+
 
 
 
@@ -163,7 +167,7 @@ const logObjectPositions = (scene: { children: any[]; }) => {
 const sceneBuilder = async({
     data
 }:SceneBuilderProps) => {
-  console.log("data from the builder",data)
+  
   const scene= new THREE.Scene();
 
   if(data){
@@ -208,7 +212,7 @@ scene.traverse( function( child ) {
     console.log("IS A WINDOW from the before the update !!!!")
   }
 } );
-console.log(counter,"Number of windows::::::::::::::::::::::::::::::::::::::::::::::::::")
+
 
 
 
@@ -222,15 +226,7 @@ console.log(counter,"Number of windows::::::::::::::::::::::::::::::::::::::::::
     }
   } );
   logObjectPositions(scene)
-  var numOfMeshes = 0;
-  scene.traverse( function( child ) {
-      if( child instanceof THREE.Mesh )
-          numOfMeshes++;
-      if(child instanceof THREE.Group){
-        console.log("IS A WINDOW!!!!!")
-      }
-  } );
-  console.log(numOfMeshes);
+  
   const sceneJson = scene.toJSON();
   const stringifiedScene = JSON.stringify(sceneJson);
   return stringifiedScene
