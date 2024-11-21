@@ -1,6 +1,7 @@
 "use client"
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
+import {Suspense} from 'react'
 
 const page = () => {
     const router=useRouter()
@@ -9,9 +10,11 @@ const page = () => {
     
 
     return (
-        <div>
-            value from params: {origin} 
-        </div>
+        <Suspense>
+            <div>
+                
+            </div>
+        </Suspense>
     )
 }
 
