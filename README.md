@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Documentation for Dashboard Page in Next.js Application
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This dashboard page is designed for a Next.js application utilizing `@kinde-oss/kinde-auth-nextjs` for authentication, `prisma` for database operations, and some custom React components. The page handles user authentication, database interactions to fetch or create user data, and displays a list of scenes specific to the authenticated user.
+
+## Components and Libraries
+
+- **@kinde-oss/kinde-auth-nextjs/server**: Used for server-side session handling.
+- **next/navigation**: Used for redirections within the application.
+- **React**: JavaScript library for building user interfaces.
+- **ThreeD**: Custom React component for rendering 3D scenes (commented out).
+- **prisma**: Prisma Client for handling database operations.
+- **@/components/ui/button**: Custom button component.
+- **lucide-react**: React icons library.
+- **next/link**: Next.js component for client-side transitions.
+- **@/components/SceneCard**: Custom component to display a scene.
+
+## Functions
+
+### `getData(params: { email, id, firstName, lastName })`
+
+This asynchronous function interacts with the Prisma client to check if a user exists in the database based on their unique `id`. If the user does not exist, it creates a new user record with the provided details.
+
+**Parameters:**
+- `email` (string): User's email address.
+- `id` (string): User's unique identifier.
+- `firstName` (string): User's first name.
+- `lastName` (string): User's last name.
+
+### `Page()`
+
+An asynchronous function component responsible for:
+1. Authenticating the user via `getKindeServerSession()`.
+2. Redirecting unauthenticated users to the homepage.
+3. Fetching or creating user data in the database.
+4. Retrieving a list of scenes associated with the authenticated user.
+5. Rendering the user interface including a greeting, a link to create new scenes, and a list of existing scenes.
+
+**User Interface:**
+- Displays a personalized greeting to the user.
+- Provides a link to create new scenes, decorated with a `PlusIcon`.
+- Maps over `scenes` to display each scene using the `SceneCard` component.
+
+## Code Snippets
+
+### Redirecting Unauthenticated Users
+
+```javascript
+if(!user || !user.id) redirect('/')
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This line checks if the user object is null or missing an `id`. If either condition is true, it redirects the user to the homepage.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Creating a New Scene Link
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```javascript
+<Link className={cn(buttonVariants({size:'sm',}),' w-fit flex justify-center items-center')} href='/scene/new'>
+  Create a Scene <PlusIcon/>
+</Link>
+```
 
-## Learn More
+This section of code uses the `Link` component from Next.js for navigation, combined with custom styling and icons to provide a visually appealing button for users to navigate to the scene creation page.
 
-To learn more about Next.js, take a look at the following resources:
+## Best Practices and Recommendations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Error Handling**: Consider adding error handling for database operations and authentication steps to enhance robustness.
+- **Security**: Ensure that user data is handled securely, especially when creating new users or accessing sensitive information.
+- **Performance**: Optimize database queries to improve page load times, especially when fetching large sets of scenes.
