@@ -10,7 +10,7 @@ const page = () => {
 
     return (
         <div>
-        
+            value from params: {origin} 
         </div>
     )
 }
