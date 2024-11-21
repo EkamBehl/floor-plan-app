@@ -3,17 +3,22 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 import {Suspense} from 'react'
 
-const page = () => {
-    const router=useRouter()
+const Temp=() =>{
     const searchParams=useSearchParams()
     const origin=searchParams.get('origin')
+    return (
+        <div>
+        </div>
+    )
+}
+
+const page = () => {
+    const router=useRouter()
     
 
     return (
         <Suspense>
-            <div>
-                
-            </div>
+           <Temp/>
         </Suspense>
     )
 }
