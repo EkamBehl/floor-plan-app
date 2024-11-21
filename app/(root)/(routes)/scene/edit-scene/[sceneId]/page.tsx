@@ -1,46 +1,7 @@
-// // File Path: app/(root)/(routes)/scene/edit-scene/[sceneId]/page.tsx
-
-// import prisma from '@/lib/db';
-// import React from 'react';
-// import * as THREE from 'three';
-// import ThreeJsScene from '../components/ThreeJsScene';
-
-// interface SceneIdPageProps{
-//     params:{
-//         sceneId:string;
-//     }
-// }
-// const sceneIdPage = async ({
-//     params
-// }:SceneIdPageProps) => {
-//     var scene=new THREE.Scene();
-//     const sceneObject=await prisma.scene.findUnique({
-//         where:{
-//             id:params.sceneId,
-//         }
-//     });
-//     if (sceneObject) {
-//         const json = JSON.parse(sceneObject.sceneString);
-//         const loader = new THREE.ObjectLoader();
-//         scene. = loader.parse(json);
-//     }
-    
-
-//   return (
-//     <ThreeJsScene data={scene}/>
-      
-    
-//   )
-// }
-
-// export default sceneIdPage
-
-
-
-// app/(root)/(routes)/scene/edit-scene/[sceneId]/page.tsx
-// File: app/(root)/(routes)/scene/edit-scene/[sceneId].tsx
 
 import * as THREE from 'three';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import ThreeJsScene from '../components/ThreeJsScene'; // Adjust the path as necessary
 import prisma from '@/lib/db'; // Make sure this is the correct import path for your prisma client
 
@@ -68,7 +29,13 @@ const SceneIdPage=async({ params }:SceneProps) => {
         
     if(sceneData){
         return (
-            <ThreeJsScene data={sceneData.sceneString}/>
+
+                <div className=' flex'>
+               
+                
+                <ThreeJsScene data={sceneData.sceneString}/>
+                </div>
+
         );
     }else{
         return(

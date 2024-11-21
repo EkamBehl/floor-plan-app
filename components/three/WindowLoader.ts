@@ -27,8 +27,8 @@ export const loadWindows= async (points: any[], scene: THREE.Scene) => {
         child.receiveShadow=true;
         child.castShadow=true;
       }
-      if(child.name=="window_pane"){
-        child.material=glassMaterial;
+      if (child.name === "window_pane" && child instanceof THREE.Mesh) {
+        child.material = glassMaterial;
       }
     })
     scene.add(mesh);

@@ -6,11 +6,6 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 
 // Define the global objects only if they are not already defined
-interface ObjectData {
-  class: string;
-  confidence?: number;
-  coords: [number, number][];
-}
 
 const materialss=["blue","black","cyan","grey","green","orange","magenta","salmon","violet","teal","brown",'red','lightblue']
 interface objectData {
@@ -63,13 +58,16 @@ const loadWindows = (points: any[], scene: THREE.Scene) => {
           if (node.type === "Mesh") {
             node.castShadow = true;
             node.receiveShadow = true;
-            if (node.name === "window_pane") {
+            if (node.name === "window_pane" && node instanceof THREE.Mesh) {
               node.material = glassMaterial;
             }
+             
           }
         });
 
         scene.add(mesh);
+        scene.updateMatrix();
+        scene.updateMatrixWorld(true);
         console.log("Window added to scene: ", mesh);
         resolve();
       },
@@ -89,8 +87,8 @@ const loadDoorModel = (points: [number, number][], scene: THREE.Scene, materials
 
   // Calculate the actual x-difference as length
   const xLength = point1.distanceTo(point2); // Distance between the two points
-  const height = 70; // Arbitrary height, adjust as needed
-  const thickness = 10; // Thickness of the door
+  const height = 50; // Arbitrary height, adjust as needed
+  const thickness = 30; // Thickness of the door
 
   // Cube geometry with x-difference as length
   const geometry = new THREE.BoxGeometry(xLength, height, thickness);
@@ -100,7 +98,7 @@ const loadDoorModel = (points: [number, number][], scene: THREE.Scene, materials
 
   // Calculate the midpoint between point1 and point2 for positioning the cube
   const midpoint = new THREE.Vector3().addVectors(point1, point2).multiplyScalar(0.5);
-  midpoint.y = height / 2; // Set the midpoint's y to half the height of the cube
+  midpoint.y = 0; // Set the midpoint's y to half the height of the cube
 
   // Calculate the rotation angle
   const direction = new THREE.Vector3().subVectors(point2, point1).normalize();
@@ -116,6 +114,13 @@ const loadDoorModel = (points: [number, number][], scene: THREE.Scene, materials
       cube.rotation.y = angle;
       cube.castShadow = true;
       cube.receiveShadow = true;
+      cube.traverse((node) => {
+        if (node.type === "Mesh") {
+          node.castShadow = true;
+          node.receiveShadow = true;
+          
+        }
+      });
       cube.scale.set(xLength,height,thickness)
       scene.add(cube);
     })
@@ -123,6 +128,8 @@ const loadDoorModel = (points: [number, number][], scene: THREE.Scene, materials
   // Set the cube's position and rotation
   
   // Add cube to the scene
+  scene.updateMatrix();
+  scene.updateMatrixWorld(true);
   
 };
 
@@ -155,8 +162,7 @@ const drawRectangle = (points: [number, number][], scene: THREE.Scene) => {
   mesh.receiveShadow = true;
 
   scene.add(mesh)
-  
- 
+
 };
 const logObjectPositions = (scene: { children: any[]; }) => {
   scene.children.forEach((obj, index) => {
@@ -201,10 +207,7 @@ const sceneBuilder = async({
       const coords = window.coords;
       await loadWindows(coords, scene);
     }
-}
-else{
-  console.log("Data is null!!!!!!!!!!");
-}
+}https://meet.google.com/rdg-nxjg-bwe
 scene.traverse( function( child ) {
   if(child instanceof THREE.Group){
     counter=counter+1;

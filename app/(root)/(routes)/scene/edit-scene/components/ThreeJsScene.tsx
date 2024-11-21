@@ -3,6 +3,8 @@
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+
 import { GUI } from "dat.gui";
 
 interface ThreeJsSceneProps {
@@ -38,6 +40,9 @@ const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const guiRef = useRef<GUI | null>(null);
+  const selectedObjectRef = useRef<THREE.Object3D | null>(null);
+  const transformControlsRef = useRef<TransformControls | null>(null);
+
 
   useEffect(() => {
     var newScene = new THREE.Scene();
@@ -84,8 +89,8 @@ const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
       hemiLight.position.set(0, 50, 0);
       newScene.add(hemiLight);
 
-      const axesHelper = new THREE.AxesHelper(50);
-      newScene.add(axesHelper);
+      // const axesHelper = new THREE.AxesHelper(50);
+      // newScene.add(axesHelper);
 
       const uniforms = {
         topColor: { value: new THREE.Color("hsl(174, 60%, 80%)") },
@@ -129,7 +134,7 @@ const ThreeJsScene: React.FC<ThreeJsSceneProps> = ({ data }) => {
 
       const gui = new GUI();
       gui.domElement.style.position = "absolute";
-      gui.domElement.style.top = "40px"; // Add padding at the top
+      gui.domElement.style.top = "80px"; // Add padding at the top
       gui.domElement.style.right = "20px"; // Add padding to the right
       guiRef.current = gui;
 
